@@ -21,6 +21,7 @@
             }
         }
 
+
         function validateClient(e) {
             e.preventDefault()
             
@@ -62,7 +63,8 @@
             }
         }
 
-        function showAlert(message,type) {
+       
+ function showAlert(message,type) {
             const alert = document.querySelector('.alert')
             if(!alert){
                 const divMessage = document.createElement('DIV')
@@ -83,6 +85,7 @@
             }
             
         }
+
 
 
     })();
