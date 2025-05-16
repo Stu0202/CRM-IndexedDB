@@ -1,12 +1,36 @@
 (function(){
-    
+    let DB;
+     const clientList = document.querySelector('#listado-clientes')
     document.addEventListener('DOMContentLoaded',()=> {
         createDB();
 
         if(window.indexedDB.open('crm',1)){
             getClients();
         }
+
+        clientList.addEventListener('click',deleteRegister)
     })
+
+    function deleteRegister(e) {
+        if(e.target.classList.contains('eliminar')){
+           const deleteID = Number(e.target.dataset.cliente)
+           const confirmDelete = confirm('Do you want to delete this client?')
+           
+           if(confirmDelete){
+            const transaction = DB.transaction(['crm'],'readwrite')
+            const objectStore = transaction.objectStore('crm')
+            objectStore.delete(deleteID);
+
+            transaction.oncomplete = function(){
+                e.target.parentElement.parentElement.remove();
+            }
+
+            transaction.onerror = function(){
+                console.log('there was an error');
+            }
+           }
+        }
+    }
 
     function createDB() {
         const createDB = window.indexedDB.open('crm',1);
@@ -50,7 +74,7 @@
                 
                 if(cursor){
                     const {name,email,phone,company,id} = cursor.value;
-                    const clientList = document.querySelector('#listado-clientes')
+                   
                     clientList.innerHTML+=`
       <tr>
         <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
@@ -65,7 +89,7 @@
             </td>
             <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5">
                 <a href="editar-cliente.html?id=${id}" class="text-teal-600 hover:text-teal-900 mr-5">Editar</a>
-                <a href="#" data-cliente="${id}" class="text-red-600 hover:text-red-900">Eliminar</a>
+                <a href="#" data-cliente="${id}" class="text-red-600 hover:text-red-900 eliminar">Eliminar</a>
             </td>
       </tr>
   `;
